@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" ng-app="interanaApp">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Earthquake Homework</title>
+        <link rel="stylesheet" href="static/css/bootstrap.min.css">
+        <!--<link rel="stylesheet" href="static/css/bootstrap-theme.min.css">-->
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js">
+        </script>
+        <script type="text/javascript" src="static/js/angular.min.js"></script>
+        <script type="text/javascript" src="earthquake.js"></script>
+    </script>
+    </head>
+    <body ng-controller="MainControl">
+        <div class="container">
+            <div class="row">
+                <h1 class="page-header">Earthquake</h1>
+
+                <div class="col-xs-12 col-md-6">
+                    <h2>Search</h1>
+                    <form ng-submit="fetchData()">
+                      <div class="form-group">
+                        <label for="sourchInput">Source of Earthquake Data</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">http://</div>
+                            <input type="text" class="form-control" id="sourchInput" placeholder="URL" ng-model="search_form.source">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="centerInput">Center Location</label>
+                        <input type="text" class="form-control" id="centerInput" placeholder="Address" ng-model="search_form.center">
+                      </div>
+                      <div class="form-group">
+                        <label for="radisInput">Radius in Miles</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="radisInput" min="1" step="1" ng-model="search_form.radis" placeholder="Number Only">
+                            <div class="input-group-addon">Miles</div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="dateInput">Start Date</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="dateInput" ng-model="search_form.start_date" placeholder="">
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+                <div class="col-xs-12 col-md-6" style="height: 360px">
+                    <div id="map-canvas" style="width: 100%; height: 100%"></div>
+                </div>
+
+                <div class="col-xs-12 col-md-12">
+                    <h2>Result <small>{{records.length}} records found</small></h1>
+                    <table class="table table-condensed table-striped">
+                        <thead>
+                            <th class="text-center">#</th>
+                            <th class="text-center">
+                                <a href="" ng-click="predicate='distance'; reverse=!reverse">
+                                    Distance</a>
+                                </th>
+                            <th class="text-center">
+                                <a href="" ng-click="predicate='properties.title'; reverse=!reverse">Title</a>
+                                </th>
+                            <th class="text-center">
+                                 <a href="" ng-click="predicate='properties.time'; reverse=!reverse">
+                                    Time</a></th>
+                            <th class="text-center">
+                                <a href="" ng-click="predicate='properties.place'; reverse=!reverse">Place</a>
+                                </th>
+                            <th class="text-center">
+                                <a href="" ng-click="predicate='properties.mag'; reverse=!reverse">
+                                    Magnitude</a>
+                                </th>
+                            <th class="text-center">
+                                <a href="" ng-click="predicate='geometry.coordinates[0]'; reverse=!reverse">
+                                    Latitude</a>
+                                </th>
+                            <th class="text-center">
+                                <a href="" ng-click="predicate='geometry.coordinates[1]'; reverse=!reverse">
+                                    Longitude</a>
+                            </th>
+                            <th class="text-center"></th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="r in records|orderBy:predicate:reverse">
+                                <td ng-bind="$index+1"></td>
+                                <td ng-bind="r.distance|number:4"></td>
+                                <td>
+                                    <a ng-click="goto(r)" href=""
+                                     ng-bind="r.properties.title"></a>
+                                </td>
+                                <td ng-bind="r.properties.time|date:'medium'"></td>
+                                <td ng-bind="r.properties.place"></td>
+                                <td class="text-right" ng-bind="r.properties.mag"></td>
+                                <td class="text-right" ng-bind="r.geometry.coordinates[1]"></td>
+                                <td class="text-right" ng-bind="r.geometry.coordinates[0]"></td>
+                                <td><a ng-href="{{r.properties.url}}" target="_blank">Detail</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
